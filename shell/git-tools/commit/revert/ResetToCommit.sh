@@ -3,7 +3,7 @@
 #     author   : Android 轮子哥
 #     github   : https://github.com/getActivity/AndroidCmdTools
 #      time    : 2026/01/25
-#      desc    : Git 重置到提交脚本（硬重置到指定 commit）
+#      desc    : Git 重置提交脚本
 # ----------------------------------------------------------------------
 scriptDirPath=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 [ -z "" ] || source "../../../common/SystemPlatform.sh"
@@ -82,10 +82,10 @@ main() {
             fi
             exit 0
         elif [[ "${resultChoice}" == "2" ]]; then
-            (cd "${repositoryDirPath}" && git reset --hard "${origHead}")
+            (cd "${repositoryDirPath}" && git reset --hard "${origHead}") < /dev/null > /dev/null
             finalHash=$(cd "${repositoryDirPath}" && git rev-parse HEAD)
             if [[ "${finalHash}" == "${origHead}" ]]; then
-                (cd "${repositoryDirPath}" && git branch -D "${backupBranch}") 2>&1 || true
+                (cd "${repositoryDirPath}" && git branch -D "${backupBranch}") < /dev/null > /dev/null || true
                 echo "✅ 已经还原到最初的状态，并已删除备份分支 ${backupBranch}"
                 exit 0
             else
