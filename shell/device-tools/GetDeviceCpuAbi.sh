@@ -51,7 +51,7 @@ printDeviceCpuAbi() {
         abiList="获取为空"
     fi
 
-    echo "✅ [${deviceId}] 设备的 CPU 架构参数为：${abi}"
+    echo "✅ [${deviceId}] 设备的 CPU 架构参数为："
     echo "主 ABI：${abi}"
     echo "32 位 ABI 列表：${abiList32}"
     echo "64 位 ABI 列表：${abiList64}"
