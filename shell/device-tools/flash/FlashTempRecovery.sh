@@ -122,8 +122,8 @@ flashTempRecoveryForDevice() {
     echo "${outputPrint}"
     if echo "${outputPrint}" | grep -qi 'bad buffer size'; then
         echo "⏳ 匹配到 Bad Buffer Size 错误，准备切槽位再重试"
-        switchToAnotherSlot
         clearMiscPartition
+        switchToAnotherSlot
         outputPrint=$(fastboot boot "${recoveryFilePath}" < /dev/null 2>&1)
         exitCode=$?
         if (( exitCode == 0 )); then
@@ -132,6 +132,8 @@ flashTempRecoveryForDevice() {
         else
             echo "❌ 切换槽位后仍加载失败，最终失败原因："
             echo "${outputPrint}"
+            clearMiscPartition
+            switchToAnotherSlot
         fi
     else
         echo "📝 未匹配到 Bad Buffer Size 错误，错误内容不触发切槽位逻辑"
