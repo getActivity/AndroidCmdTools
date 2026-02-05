@@ -89,6 +89,7 @@ setGlobalProxyForDevice() {
 }
 
 main() {
+    printCurrentSystemType
     checkAdbEnvironment
     waitUserInputParameter
     setGlobalProxyForDevice
