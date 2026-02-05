@@ -1,4 +1,10 @@
 #!/bin/bash
+# ----------------------------------------------------------------------
+#     author   : Android 轮子哥
+#     github   : https://github.com/getActivity/AndroidCmdTools
+#      time    : 2026/01/25
+#      desc    : Git 文件或者目录对比脚本
+# ----------------------------------------------------------------------
 scriptDirPath=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 [ -z "" ] || source "../common/SystemPlatform.sh"
 source "${scriptDirPath}/../common/SystemPlatform.sh"
