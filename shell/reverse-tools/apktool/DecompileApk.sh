@@ -35,8 +35,11 @@ waitUserInputParameter() {
     read -r apkDecompileDirPath
     apkDecompileDirPath=$(parseComputerFilePath "${apkDecompileDirPath}")
 
+    decompileDirNameSuffix="-decompile-$(date "+%Y%m%d%H%M%S")"
     if [[ -z "${apkDecompileDirPath}" ]]; then
-        apkDecompileDirPath="${sourceApkFilePath%.*}-decompile-$(date "+%Y%m%d%H%M%S")"
+        apkDecompileDirPath="${sourceApkFilePath%.*}${decompileDirNameSuffix}"
+    else
+        apkDecompileDirPath="${apkDecompileDirPath}$(getFileSeparator)$(basename "${sourceApkFilePath%.*}")${decompileDirNameSuffix}"
     fi
 
     local apktoolJarFileName="apktool-2.12.1.jar"
@@ -97,7 +100,6 @@ decompileApk() {
         exit 1
     fi
 
-    # 核心逻辑：目录不存在或者目录为空
     if [[ ! -d "${apkDecompileDirPath}" || -z "$(ls -A "${apkDecompileDirPath}")" ]]; then
         echo "❌ 反编译失败，请检查 apktool 输出的信息："
         echo "${outputPrint}"
