@@ -86,12 +86,20 @@ main() {
             fi
         fi
         rm -f "${zipFilePath}"
-        if ! isWindows; then
-            chmod +x "${jadxDirPath}${fileSeparator}bin${fileSeparator}jadx-gui" "${jadxDirPath}${fileSeparator}bin${fileSeparator}jadx"
+    fi
+
+    jadxGuiShellFilePath="${jadxDirPath}${fileSeparator}bin${fileSeparator}jadx-gui"
+    if ! isWindows; then
+        if [[ ! -x "${jadxGuiShellFilePath}" ]]; then
+            chmod +x "${jadxGuiShellFilePath}"
+        fi
+        jadxShellFilePath="${jadxDirPath}${fileSeparator}bin${fileSeparator}jadx"
+        if [[ ! -x "${jadxShellFilePath}" ]]; then
+            chmod +x "${jadxShellFilePath}"
         fi
     fi
 
-    "${jadxDirPath}${fileSeparator}bin${fileSeparator}jadx-gui" "${inputFilePath}"
+    "${jadxGuiShellFilePath}" "${inputFilePath}"
 }
 
 clear
