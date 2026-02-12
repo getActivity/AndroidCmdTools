@@ -28,29 +28,15 @@
 
 * 一. 下载项目到本地
 
-    * 克隆项目（推荐，可通过 Git 更新）
+    * 克隆项目（推荐，可通过 `Git` 更新）
 
-    * 下载项目（不推荐，无法通过 Git 更新）
+    * 下载项目（不推荐，无法通过 `Git` 更新）
 
-* 二. 为脚本添加执行权限（macOs 或 Linux 系统必须，Windows 可跳过此步骤）
+* 二. 集成 `Shell Bash` 环境（Windows 系统必须，macOs 或 Linux 系统可跳过此步骤）
 
-    * 进入项目根目录（xxx 请替换成项目所在路径）
-    
-    ```bash
-    cd xxx/AndroidCmdTools
-    ```
-    
-    * 递归为所有脚本文件添加执行权限
-    
-    ```bash
-    find . -type f -exec chmod +x {} \;
-    ```
+    * 下载 `Git Bash` 工具
 
-* 三. 集成 Shell Bash 环境（Windows 系统必须，macOs 或 Linux 系统可跳过此步骤）
-
-    * 下载 Git Bash 工具
-
-        * 由于 Git Bash 是捆绑在 Git 工具中的，所以需要下载 Git 工具
+        * 由于 `Git Bash` 是捆绑在 `Git` 工具中的，所以需要下载 `Git` 工具
 
             * [Windows Git 下载](https://git-scm.com/install/windows)
 
@@ -58,21 +44,21 @@
 
             * [Linux Git 下载](https://git-scm.com/install/linux)
 
-    * 安装 Git Bash 工具
+    * 安装 `Git Bash` 工具
 
-        * 在安装 Git 的时候勾选安装 `Git Bash Here` 选项
+        * 在安装 `Git` 的时候勾选安装 `Git Bash Here` 选项
 
-    * 配置 Git Bash 环境
+    * 配置 `Git Bash` 环境
 
-        * 注意事项：Git 在安装时默认只配置了 Git 环境，没有配置 Git Bash 环境
+        * 注意事项：`Git` 在安装时默认只配置了 `Git` 环境，没有配置 `Git Bash` 环境
 
-        * 注意覆盖安装 Git 很可能会导致 Git Bash 环境变量丢失，需要重新配置
+        * 注意覆盖安装 `Git` 很可能会导致 `Git Bash` 环境变量丢失，需要重新配置
 
     * 配置 Windows 系统环境变量
 
         * 右击 `我的电脑` —> 点击 `属性` —> 点击 `高级系统设置`
     
-        * 在系统环境变量找到 Path 中，添加 Git Bash 所处的路径，例如 `C:\Program Files\Git\bin`
+        * 在系统环境变量找到 `Path` 中，添加 `Git Bash` 所处的路径，例如 `C:\Program Files\Git\bin`
     
         * 在 `编辑系统变量` 窗口中保存修改，点击 `确定` 按钮
     
@@ -80,23 +66,13 @@
     
         * 在 `系统属性` 窗口也要保存修改，点击 `确定` 按钮
     
-    * 验证 Git Bash 环境是否配置成功
+    * 验证 `Git Bash` 环境是否配置成功
 
         * 关闭已打开的所有命令行窗口
 
-        * 在桌面右击空白处，选择 `Git Bash Here`，打开 Git Bash 终端，执行命令 `bash --version`，如果输出版本信息，则表示配置成功
+        * 关闭已打开的所有命令行窗口，然后同时按下 `Windows 键 + R 键`，输入 `cmd` 打开 `命令行提示符` 窗口，执行命令 `bash --version`，如果输出版本信息，则表示配置成功
 
-        * 若你无法通过 `Git Bash Here` 打开 Git Bash 的终端窗口，又或者运行 bat 脚本出现报错，则证明你前面安装的 Git Bash 和当前 Windows 系统版本可能存在兼容问题，解决方法如下：
-
-            * 去系统环境变量配置中，移除刚刚给 Git Bash 配置的环境变量，即前面配置的 `C:\Program Files\Git\bin`，移除该环境变量不会影响使用 Git 命令
-
-            * 下载 [WindowsBash](https://github.com/getActivity/AndroidCmdTools/releases/download/1.0/WindowsBash.zip)，解压 WindowsBash 压缩包，推荐解压到 `C:\Program Files\WindowsBash` 这个目录下
-
-            * 然后尝试打开 `C:\Program Files\WindowsBash\bin\bash.exe` 看看是否能正常打开 Bash 终端，如果能正常打开，则说明 WindowsBash 兼容当前 Windows 系统
-
-            * 在系统环境变量 Path 中，添加 WindowsBash 所在的路径，例如 `C:\Program Files\WindowsBash\bin`，然后保存修改
-
-            * 关闭已打开的所有命令行窗口，然后同时按下 `Windows 键 + R 键`，输入 `cmd` 打开 `命令行提示符` 窗口，执行命令 `bash --version`，如果输出版本信息，则表示配置成功
+#### [其他常见问题请点击此处查看](HelpDoc.md)
 
 #### 项目内容
 
