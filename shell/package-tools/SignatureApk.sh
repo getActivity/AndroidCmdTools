@@ -16,9 +16,14 @@ unset scriptDirPath
 unset originalDirPath
 
 waitUserInputParameter() {
-    echo "请输入要进行签名的 apk 文件或所在目录路径："
-    read -r sourcePath
-    sourcePath=$(parseComputerFilePath "${sourcePath}")
+    local sourcePath=$1
+    if [[ -f "${sourcePath}" ]]; then
+        sourcePath=$(parseComputerFilePath "${sourcePath}")
+    else
+        echo "请输入要进行签名的 apk 文件或所在目录路径："
+        read -r sourcePath
+        sourcePath=$(parseComputerFilePath "${sourcePath}")
+    fi
     if [[ -z "${sourcePath}" ]]; then
         echo "❌ 路径为空，请检查输入是否正确"
         exit 1
@@ -264,9 +269,9 @@ signatureApkInParallel() {
 main() {
     printCurrentSystemType
     checkJavaEnvironment
-    waitUserInputParameter
+    waitUserInputParameter "$1"
     signatureApkInParallel
 }
 
 clear
-main
+main "$@"

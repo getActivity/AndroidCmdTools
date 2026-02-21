@@ -76,11 +76,29 @@ recompileApk() {
     echo "✅ 回编译 apk 完成，输出文件：${outputApkFilePath}"
 }
 
+signatureApk() {
+    echo "是否要对回编译输出的 apk 进行签名？（y/n）"
+    while true; do
+        read -r signConfirm
+        if [[ "${signConfirm}" =~ ^[yY]$ ]]; then
+            selfDir=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+            bash "${selfDir}/../../package-tools/SignatureApk.sh" "${outputApkFilePath}"
+            break
+        elif [[ "${signConfirm}" =~ ^[nN]$ ]]; then
+            break
+        else
+            echo "👻 输入不正确，请输入正确的选项（y/n）"
+            continue
+        fi
+    done
+}
+
 main() {
     printCurrentSystemType
     checkJavaEnvironment
     waitUserInputParameter
     recompileApk
+    signatureApk
 }
 
 clear
