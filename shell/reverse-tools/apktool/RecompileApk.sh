@@ -33,8 +33,30 @@ waitUserInputParameter() {
     outputApkFilePath=$(parseComputerFilePath "${outputApkFilePath}")
 
     if [[ -z "${outputApkFilePath}" ]]; then
-        base="${sourceDirPath%/}"
-        outputApkFilePath="${base}-recompile-$(date "+%Y%m%d%H%M%S").apk"
+        outputApkFilePath="${sourceDirPath%/}.apk"
+    fi
+
+    recompileApkNameSuffix="-recompile-$(date "+%Y%m%d%H%M%S").apk"
+    if [[ -f "${outputApkFilePath}" ]]; then
+        echo "该文件已经存在，是否覆盖原有内容？（y/n）"
+        while true; do
+            read -r rewriteConfirm
+            if [[ "${rewriteConfirm}" =~ ^[yY]$ ]]; then
+                break
+            elif [[ "${rewriteConfirm}" =~ ^[nN]$ ]]; then
+                outputApkFilePath="${outputApkFilePath%.*}${recompileApkNameSuffix}"
+                break
+            else
+                echo "👻 输入不正确，请输入正确的选项（y/n）"
+                continue
+            fi
+        done
+    elif [[ -d "${outputApkFilePath}" ]]; then
+        if [[ "$(find "${outputApkFilePath}" -mindepth 1 | head -1)" ]]; then
+            outputApkFilePath="${outputApkFilePath%.*}${recompileApkNameSuffix}"
+        else
+            rmdir "${outputApkFilePath}"
+        fi
     fi
 
     local apktoolJarFileName="apktool-2.12.1.jar"

@@ -37,11 +37,29 @@ waitUserInputParameter() {
     read -r apkDecompileDirPath
     apkDecompileDirPath=$(parseComputerFilePath "${apkDecompileDirPath}")
 
-    decompileDirNameSuffix="-decompile-$(date "+%Y%m%d%H%M%S")"
     if [[ -z "${apkDecompileDirPath}" ]]; then
-        apkDecompileDirPath="${sourceApkFilePath%.*}${decompileDirNameSuffix}"
+        apkDecompileDirPath="${sourceApkFilePath%.*}"
     else
-        apkDecompileDirPath="${apkDecompileDirPath}$(getFileSeparator)$(basename "${sourceApkFilePath%.*}")${decompileDirNameSuffix}"
+        apkDecompileDirPath="${apkDecompileDirPath}$(getFileSeparator)$(basename "${sourceApkFilePath%.*}")"
+    fi
+
+    decompileDirNameSuffix="-decompile-$(date "+%Y%m%d%H%M%S")"
+    if [[ -f "${apkDecompileDirPath}" ]]; then
+        apkDecompileDirPath="${apkDecompileDirPath}${decompileDirNameSuffix}"
+    elif [[ -d "${apkDecompileDirPath}" && "$(find "${apkDecompileDirPath}" -mindepth 1 | head -1)" ]]; then
+        echo "该目录已经存在且不为空，是否覆盖原有内容？（y/n）"
+        while true; do
+            read -r rewriteConfirm
+            if [[ "${rewriteConfirm}" =~ ^[yY]$ ]]; then
+                break
+            elif [[ "${rewriteConfirm}" =~ ^[nN]$ ]]; then
+                apkDecompileDirPath="${apkDecompileDirPath}${decompileDirNameSuffix}"
+                break
+            else
+                echo "👻 输入不正确，请输入正确的选项（y/n）"
+                continue
+            fi
+        done
     fi
 
     local apktoolJarFileName="apktool-2.12.1.jar"
