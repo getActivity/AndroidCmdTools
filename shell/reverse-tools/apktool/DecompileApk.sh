@@ -51,6 +51,8 @@ waitUserInputParameter() {
         while true; do
             read -r rewriteConfirm
             if [[ "${rewriteConfirm}" =~ ^[yY]$ ]]; then
+                rm -rf "${apkDecompileDirPath:?}"
+                mkdir -p "${apkDecompileDirPath}"
                 break
             elif [[ "${rewriteConfirm}" =~ ^[nN]$ ]]; then
                 apkDecompileDirPath="${apkDecompileDirPath}${decompileDirNameSuffix}"
