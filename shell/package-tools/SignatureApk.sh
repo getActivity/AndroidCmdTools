@@ -107,11 +107,11 @@ waitUserInputParameter() {
         exit 1
     fi
 
-    echo "签名后是否直接覆盖原文件？（y/n），留空则默认不覆盖"
+    echo "签名后是否直接覆盖原文件？（y/n），留空则默认覆盖"
     while true; do
         read -r overwriteSourceFileConfirm
         if [[ -z "${overwriteSourceFileConfirm}" ]]; then
-            overwriteSourceFile="false"
+            overwriteSourceFile="true"
             break
         elif [[ "${overwriteSourceFileConfirm}" =~ ^[yY]$ ]]; then
             overwriteSourceFile="true"
