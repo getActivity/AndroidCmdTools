@@ -36,7 +36,7 @@ waitUserInputParameter() {
         outputApkFilePath="${sourceDirPath%/}.apk"
     fi
 
-    recompileApkNameSuffix="-recompile-$(date "+%Y%m%d%H%M%S").apk"
+    recompileApkNameSuffix="-recompile-$(date "+%Y%m%d%H%M%S")"
     if [[ -f "${outputApkFilePath}" ]]; then
         echo "该文件已经存在，是否覆盖原有内容？（y/n）"
         while true; do
@@ -44,7 +44,7 @@ waitUserInputParameter() {
             if [[ "${rewriteConfirm}" =~ ^[yY]$ ]]; then
                 break
             elif [[ "${rewriteConfirm}" =~ ^[nN]$ ]]; then
-                outputApkFilePath="${outputApkFilePath%.*}${recompileApkNameSuffix}"
+                outputApkFilePath="${outputApkFilePath%.*}${recompileApkNameSuffix}.apk"
                 break
             else
                 echo "👻 输入不正确，请输入正确的选项（y/n）"
@@ -53,7 +53,7 @@ waitUserInputParameter() {
         done
     elif [[ -d "${outputApkFilePath}" ]]; then
         if [[ "$(find "${outputApkFilePath}" -mindepth 1 | head -1)" ]]; then
-            outputApkFilePath="${outputApkFilePath%.*}${recompileApkNameSuffix}"
+            outputApkFilePath="${outputApkFilePath%.*}${recompileApkNameSuffix}.apk"
         else
             rmdir "${outputApkFilePath}"
         fi
