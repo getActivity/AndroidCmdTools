@@ -40,7 +40,17 @@ main() {
         exit 1
     fi
 
-    androidXFilePath="${supportFilePath%.*}-androidx-$(date "+%Y%m%d%H%M%S").${supportFilePath##*.}"
+    androidXFilePath="${supportFilePath%.*}-androidx.${supportFilePath##*.}"
+    androidxNameSuffix="-$(date "+%Y%m%d%H%M%S")"
+    if [[ -f "${androidXFilePath}" ]]; then
+        androidXFilePath="${androidXFilePath%.*}${androidxNameSuffix}.${supportFilePath##*.}"
+    elif [[ -d "${androidXFilePath}" ]]; then
+        if [[ "$(find "${androidXFilePath}" -mindepth 1 | head -1)" ]]; then
+            androidXFilePath="${androidXFilePath%.*}${androidxNameSuffix}.${supportFilePath##*.}"
+        else
+            rmdir "${androidXFilePath}"
+        fi
+    fi
     echo "androidx 包的保存路径：${androidXFilePath}"
 
     outputPrint="$("${resourcesDirPath}$(getFileSeparator)jetifier-standalone-20200827$(getFileSeparator)bin$(getFileSeparator)jetifier-standalone" -i "${supportFilePath}" -o "${androidXFilePath}" 2>&1)"

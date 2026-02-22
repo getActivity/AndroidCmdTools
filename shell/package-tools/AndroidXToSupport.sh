@@ -40,7 +40,17 @@ main() {
         exit 1
     fi
 
-    supportFilePath="${androidXFilePath%.*}-support-$(date "+%Y%m%d%H%M%S").${androidXFilePath##*.}"
+    supportFilePath="${androidXFilePath%.*}-support.${androidXFilePath##*.}"
+    supportNameSuffix="-$(date "+%Y%m%d%H%M%S")"
+    if [[ -f "${supportFilePath}" ]]; then
+        supportFilePath="${supportFilePath%.*}${supportNameSuffix}.${androidXFilePath##*.}"
+    elif [[ -d "${supportFilePath}" ]]; then
+        if [[ "$(find "${supportFilePath}" -mindepth 1 | head -1)" ]]; then
+            supportFilePath="${supportFilePath%.*}${supportNameSuffix}.${androidXFilePath##*.}"
+        else
+            rmdir "${supportFilePath}"
+        fi
+    fi
     echo "support 包的保存路径：${supportFilePath}"
 
     outputPrint="$("${resourcesDirPath}$(getFileSeparator)jetifier-standalone-20200827$(getFileSeparator)bin$(getFileSeparator)jetifier-standalone" -r -i "${androidXFilePath}" -o "${supportFilePath}" 2>&1)"
