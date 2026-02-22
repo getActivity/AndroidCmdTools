@@ -40,7 +40,17 @@ main() {
         exit 1
     fi
 
-    outputFilePath="${inputFilePath%.*}-dex2jar-$(date "+%Y%m%d%H%M%S").jar"
+    outputFilePath="${inputFilePath%.*}.jar"
+    dex2jarNameSuffix="-$(date "+%Y%m%d%H%M%S")"
+    if [[ -f "${outputFilePath}" ]]; then
+        outputFilePath="${outputFilePath%.*}${dex2jarNameSuffix}.jar"
+    elif [[ -d "${outputFilePath}" ]]; then
+        if [[ "$(find "${outputFilePath}" -mindepth 1 | head -1)" ]]; then
+            outputFilePath="${outputFilePath%.*}${dex2jarNameSuffix}.jar"
+        else
+            rmdir "${outputFilePath}"
+        fi
+    fi
     echo "输出的 jar 文件路径：${outputFilePath}"
 
     outputPrint="$("${resourcesDirPath}$(getFileSeparator)dex2jar-2.4$(getFileSeparator)d2j-dex2jar.sh" -f -o "${outputFilePath}" "${inputFilePath}" 2>&1)"

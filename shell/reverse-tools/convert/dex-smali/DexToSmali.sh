@@ -40,13 +40,16 @@ main() {
         exit 1
     fi
 
-    echo "请输入 smali 输出目录（可空，默认为同名 -dex2smali 目录）"
-    read -r outputSmaliDirPath
-    outputSmaliDirPath=$(parseComputerFilePath "${outputSmaliDirPath}")
-
-    if [[ -z "${outputSmaliDirPath}" ]]; then
-        base="${inputDexFilePath%.*}"
-        outputSmaliDirPath="${base}-dex2smali-$(date "+%Y%m%d%H%M%S")"
+    outputSmaliDirPath="${inputDexFilePath%.*}"
+    dex2smaliDirSuffix="-$(date "+%Y%m%d%H%M%S")"
+    if [[ -f "${outputSmaliDirPath}" ]]; then
+        outputSmaliDirPath="${outputSmaliDirPath}${dex2smaliDirSuffix}"
+    elif [[ -d "${outputSmaliDirPath}" ]]; then
+        if [[ "$(find "${outputSmaliDirPath}" -mindepth 1 | head -1)" ]]; then
+            outputSmaliDirPath="${outputSmaliDirPath}${dex2smaliDirSuffix}"
+        else
+            rmdir "${outputSmaliDirPath}"
+        fi
     fi
 
     outputPrint="$(java -jar "${resourcesDirPath}$(getFileSeparator)baksmali-2.5.2.jar" d "${inputDexFilePath}" -o "${outputSmaliDirPath}" 2>&1)"

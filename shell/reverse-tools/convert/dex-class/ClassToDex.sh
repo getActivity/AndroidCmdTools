@@ -65,9 +65,19 @@ main() {
     fi
 
     if [[ -d "${inputPath}" ]]; then
-        outputDex="${classesDirPath%/}-class2dex-$(date "+%Y%m%d%H%M%S").dex"
+        outputDex="${classesDirPath%/}.dex"
     else
-        outputDex="${inputPath%.*}-class2dex-$(date "+%Y%m%d%H%M%S").dex"
+        outputDex="${inputPath%.*}.dex"
+    fi
+    class2dexNameSuffix="-$(date "+%Y%m%d%H%M%S")"
+    if [[ -f "${outputDex}" ]]; then
+        outputDex="${outputDex%.*}${class2dexNameSuffix}.dex"
+    elif [[ -d "${outputDex}" ]]; then
+        if [[ "$(find "${outputDex}" -mindepth 1 | head -1)" ]]; then
+            outputDex="${outputDex%.*}${class2dexNameSuffix}.dex"
+        else
+            rmdir "${outputDex}"
+        fi
     fi
     outputPrint="$("${resourcesDirPath}$(getFileSeparator)dex2jar-2.4$(getFileSeparator)d2j-jar2dex.sh" -f -o "${outputDex}" "${tempJar}" 2>&1)"
     exitCode=$?

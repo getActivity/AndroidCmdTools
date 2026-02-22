@@ -35,12 +35,16 @@ main() {
         exit 1
     fi
 
-    echo "请输入生成的 dex 文件路径（可空，默认同名 .dex）："
-    read -r outputDexFilePath
-    outputDexFilePath=$(parseComputerFilePath "${outputDexFilePath}")
-
-    if [[ -z "${outputDexFilePath}" ]]; then
-        outputDexFilePath="${inputSmaliDirPath}-smali2dex-$(date "+%Y%m%d%H%M%S").dex"
+    outputDexFilePath="${inputSmaliDirPath%/}.dex"
+    smali2dexNameSuffix="-$(date "+%Y%m%d%H%M%S")"
+    if [[ -f "${outputDexFilePath}" ]]; then
+        outputDexFilePath="${outputDexFilePath%.*}${smali2dexNameSuffix}.dex"
+    elif [[ -d "${outputDexFilePath}" ]]; then
+        if [[ "$(find "${outputDexFilePath}" -mindepth 1 | head -1)" ]]; then
+            outputDexFilePath="${outputDexFilePath%.*}${smali2dexNameSuffix}.dex"
+        else
+            rmdir "${outputDexFilePath}"
+        fi
     fi
 
     outputPrint="$(java -jar "${resourcesDirPath}$(getFileSeparator)smali-2.5.2.jar" a "${inputSmaliDirPath}" -o "${outputDexFilePath}" 2>&1)"

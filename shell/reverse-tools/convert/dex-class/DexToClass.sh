@@ -41,8 +41,19 @@ main() {
     fi
 
     tempJar="${inputFilePath%.*}.jar"
-    classesDirPath="${inputFilePath%.*}-dex2class-$(date "+%Y%m%d%H%M%S")"
     echo "中间 jar 路径：${tempJar}"
+
+    classesDirPath="${inputFilePath%.*}"
+    dex2classDirSuffix="-$(date "+%Y%m%d%H%M%S")"
+    if [[ -f "${classesDirPath}" ]]; then
+        classesDirPath="${classesDirPath}${dex2classDirSuffix}"
+    elif [[ -d "${classesDirPath}" ]]; then
+        if [[ "$(find "${classesDirPath}" -mindepth 1 | head -1)" ]]; then
+            classesDirPath="${classesDirPath}${dex2classDirSuffix}"
+        else
+            rmdir "${classesDirPath}"
+        fi
+    fi
     echo "classes 输出目录：${classesDirPath}"
 
     outputPrint="$("${resourcesDirPath}$(getFileSeparator)dex2jar-2.4$(getFileSeparator)d2j-dex2jar.sh" -f -o "${tempJar}" "${inputFilePath}" 2>&1)"
