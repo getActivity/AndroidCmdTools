@@ -6,7 +6,7 @@ if [[ ! -d "${shellDirPath}" ]]; then
     exit 1
 fi
 
-shellFilePath="${shellDirPath}/device-tools/InstallApk.sh"
+shellFilePath="${shellDirPath}/device-tools/InstallApp.sh"
 
 if [[ ! -f "${shellFilePath}" ]]; then
     echo "❌ 没找到 shell 文件，请检查 ${shellFilePath} 路径是否正确"

@@ -14,7 +14,7 @@ set "currentDirPath=%~dp0"
 pushd "!currentDirPath!\..\.."
 set "tempDirPath=%CD%"
 popd
-set "shellFilePath=!tempDirPath!\shell\device-tools\InstallApk.sh"
+set "shellFilePath=!tempDirPath!\shell\device-tools\InstallApp.sh"
 
 if not exist "!shellFilePath!" (
     echo ❌ 没找到 shell 文件，请检查 !shellFilePath! 路径是否正确
