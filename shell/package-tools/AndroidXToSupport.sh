@@ -10,7 +10,8 @@ originalDirPath=$PWD
 cd "${scriptDirPath}" || exit 1
 source "../common/SystemPlatform.sh" && \
 source "../common/EnvironmentTools.sh" && \
-source "../common/FileTools.sh" || exit 1
+source "../common/FileTools.sh" && \
+source "../business/ResourceManager.sh" || exit 1
 cd "${originalDirPath}" || exit 1
 unset scriptDirPath
 unset originalDirPath
@@ -18,13 +19,6 @@ unset originalDirPath
 main() {
     printCurrentSystemType
     checkJavaEnvironment
-
-    resourcesDirPath=$(getResourcesDirPath)
-    if [[ -z "${resourcesDirPath}" ]]; then
-        echo "❌ 未找到 resources 目录，请确保它位于脚本的当前目录或者父目录"
-        exit 1
-    fi
-    echo "资源目录为：${resourcesDirPath}"
 
     echo "请输入要转换 aar / jar / zip 包的路径："
     read -r androidXFilePath
@@ -53,7 +47,7 @@ main() {
     fi
     echo "support 包的保存路径：${supportFilePath}"
 
-    outputPrint="$("${resourcesDirPath}$(getFileSeparator)jetifier-standalone-20200827$(getFileSeparator)bin$(getFileSeparator)jetifier-standalone" -r -i "${androidXFilePath}" -o "${supportFilePath}" 2>&1)"
+    outputPrint="$("$(getJetifierStandaloneShellFilePath)" -r -i "${androidXFilePath}" -o "${supportFilePath}" 2>&1)"
     exitCode=$?
     if (( exitCode != 0 )); then
         echo "❌ 转换失败，原因如下："

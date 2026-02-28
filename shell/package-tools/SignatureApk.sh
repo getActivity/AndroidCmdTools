@@ -10,7 +10,8 @@ originalDirPath=$PWD
 cd "${scriptDirPath}" || exit 1
 source "../common/SystemPlatform.sh" && \
 source "../common/EnvironmentTools.sh" && \
-source "../common/FileTools.sh" || exit 1
+source "../common/FileTools.sh" && \
+source "../business/ResourceManager.sh" || exit 1
 cd "${originalDirPath}" || exit 1
 unset scriptDirPath
 unset originalDirPath
@@ -48,19 +49,13 @@ waitUserInputParameter() {
         exit 1
     fi
 
-    resourcesDirPath=$(getResourcesDirPath)
-    if [[ -z "${resourcesDirPath}" ]]; then
-        echo "❌ 未找到 resources 目录，请确保它位于脚本的当前目录或者父目录"
-        exit 1
-    fi
-    echo "资源目录为：${resourcesDirPath}"
     echo "是否使用默认的签名配置进行签名？(y/n)，留空则默认使用"
     read -r oneKeySignature
     if [[ -z "${oneKeySignature}" ]]; then
         oneKeySignature="y"
     fi
     if [[ "${oneKeySignature}" =~ ^[yY]$ ]]; then
-        storeFilePath="${resourcesDirPath}$(getFileSeparator)signatureFile$(getFileSeparator)AppSignature.jks"
+        storeFilePath=$(getDefaultStoreFilePath)
         apkSignerJarFilePath=""
     else
         echo "请输入 apksigner jar 包的路径（可为空）"
@@ -92,7 +87,7 @@ waitUserInputParameter() {
         read -r keyPassword
     fi
     if [[ -z "${apkSignerJarFilePath}" ]]; then
-        apkSignerJarFilePath="${resourcesDirPath}$(getFileSeparator)apksigner-36.0.0.jar"
+        apkSignerJarFilePath="$(getApksignerJarFilePath)"
     fi
     if [[ ! -f "${storeFilePath}" ]]; then
         echo "❌ 密钥库文件不存在，请检查 ${storeFilePath} 文件路径是否正确"

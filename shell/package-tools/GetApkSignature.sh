@@ -10,7 +10,8 @@ originalDirPath=$PWD
 cd "${scriptDirPath}" || exit 1
 source "../common/SystemPlatform.sh" && \
 source "../common/EnvironmentTools.sh" && \
-source "../common/FileTools.sh" || exit 1
+source "../common/FileTools.sh" && \
+source "../business/ResourceManager.sh" || exit 1
 cd "${originalDirPath}" || exit 1
 unset scriptDirPath
 unset originalDirPath
@@ -18,13 +19,6 @@ unset originalDirPath
 main() {
     printCurrentSystemType
     checkJavaEnvironment
-
-    resourcesDirPath=$(getResourcesDirPath)
-    if [[ -z "${resourcesDirPath}" ]]; then
-        echo "❌ 未找到 resources 目录，请确保它位于脚本的当前目录或者父目录"
-        exit 1
-    fi
-    echo "资源目录为：${resourcesDirPath}"
 
     echo "请输入要要进行要验证的 apk 包的路径（不能为空）"
     read -r sourceApkFilePath
@@ -45,7 +39,7 @@ main() {
     apkSignerJarFilePath=$(parseComputerFilePath "${apkSignerJarFilePath}")
 
     if [[ -z "${apkSignerJarFilePath}" ]]; then
-        apkSignerJarFilePath="${resourcesDirPath}$(getFileSeparator)apksigner-36.0.0.jar"
+        apkSignerJarFilePath="$(getApksignerJarFilePath)"
     fi
 
     if [[ ! -f "${apkSignerJarFilePath}" ]]; then

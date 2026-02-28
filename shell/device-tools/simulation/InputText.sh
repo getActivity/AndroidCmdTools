@@ -12,7 +12,8 @@ source "../../common/SystemPlatform.sh" && \
 source "../../common/EnvironmentTools.sh" && \
 source "../../common/FileTools.sh" && \
 source "../../common/PasteTools.sh" && \
-source "../../business/DevicesSelector.sh" || exit 1
+source "../../business/DevicesSelector.sh" && \
+source "../../business/ResourceManager.sh" || exit 1
 cd "${originalDirPath}" || exit 1
 unset scriptDirPath
 unset originalDirPath
@@ -100,14 +101,8 @@ isInstallAdbKeyBoard() {
 
 installAdbKeyBoard() {
     local deviceId=$1
-    local resourcesDirPath
-    resourcesDirPath=$(getResourcesDirPath)
-    if [[ -z "${resourcesDirPath}" ]]; then
-        echo "❌ 未找到 resources 目录，请确保它位于脚本的当前目录或者父目录"
-        return 1
-    fi
-    echo "资源目录为：${resourcesDirPath}"
-    local apkFilePath="${resourcesDirPath}/ADBKeyBoard-5.0.apk"
+    local apkFilePath
+    apkFilePath="$(getADBKeyBoardApkFilePath)"
     if [[ ! -f "${apkFilePath}" ]]; then
         echo "❌ 找不到 ADBKeyBoard 安装包：${apkFilePath}"
         return 1

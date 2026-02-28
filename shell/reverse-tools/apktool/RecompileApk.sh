@@ -10,15 +10,13 @@ originalDirPath=$PWD
 cd "${scriptDirPath}" || exit 1
 source "../../common/SystemPlatform.sh" && \
 source "../../common/EnvironmentTools.sh" && \
-source "../../common/FileTools.sh" || exit 1
+source "../../common/FileTools.sh" && \
+source "../../business/ResourceManager.sh" || exit 1
 cd "${originalDirPath}" || exit 1
 unset scriptDirPath
 unset originalDirPath
 
 waitUserInputParameter() {
-    resourcesDirPath=$(getResourcesDirPath)
-    echo "资源目录为：${resourcesDirPath}"
-
     echo "请输入要回编译的 apk 源目录路径（即反编译后的目录）"
     read -r sourceDirPath
     sourceDirPath=$(parseComputerFilePath "${sourceDirPath}")
@@ -59,13 +57,16 @@ waitUserInputParameter() {
         fi
     fi
 
-    local apktoolJarFileName="apktool-2.12.1.jar"
-    echo "请输入 apktool jar 包的路径（可为空，默认使用 ${apktoolJarFileName}）"
+    local apktoolDefaultJarFilePath
+    apktoolDefaultJarFilePath=$(getApktoolJarFilePath)
+    local apktoolDefaultJarFileName
+    apktoolDefaultJarFileName=$(basename "${apktoolDefaultJarFilePath}")
+    echo "请输入 apktool jar 包的路径（可为空，默认使用 ${apktoolDefaultJarFileName}）"
     read -r apktoolJarFilePath
     apktoolJarFilePath=$(parseComputerFilePath "${apktoolJarFilePath}")
 
     if [[ -z "${apktoolJarFilePath}" ]]; then
-        apktoolJarFilePath="${resourcesDirPath}$(getFileSeparator)${apktoolJarFileName}"
+        apktoolJarFilePath="${apktoolDefaultJarFilePath}"
     fi
 
     if [[ ! -f "${apktoolJarFilePath}" ]]; then

@@ -1,0 +1,153 @@
+#!/bin/bash
+# ----------------------------------------------------------------------
+#     author   : Android 轮子哥
+#     github   : https://github.com/getActivity/AndroidCmdTools
+#      time    : 2026/02/28
+#      desc    : 资源管理器脚本
+# ----------------------------------------------------------------------
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/../common/SystemPlatform.sh" || source "../common/SystemPlatform.sh"
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/../common/FileTools.sh" || source "../common/FileTools.sh"
+
+getDexToJarShellDirPath() {
+    local resourcesDirPath=$(getResourcesDirPath)
+    echo "${resourcesDirPath}$(getFileSeparator)dex2jar-2.4$(getFileSeparator)d2j-dex2jar.sh"
+}
+
+getDexToJarShellFilePath() {
+    local resourcesDirPath=$(getResourcesDirPath)
+    echo "${resourcesDirPath}$(getFileSeparator)dex2jar-2.4$(getFileSeparator)d2j-dex2jar.sh"
+}
+
+getJarToDexShellDirPath() {
+    local resourcesDirPath=$(getResourcesDirPath)
+    echo "${resourcesDirPath}$(getFileSeparator)dex2jar-2.4$(getFileSeparator)d2j-jar2dex.sh"
+}
+
+getJarToDexShellFilePath() {
+    local resourcesDirPath=$(getResourcesDirPath)
+    echo "${resourcesDirPath}$(getFileSeparator)dex2jar-2.4$(getFileSeparator)d2j-jar2dex.sh"
+}
+getJadxShellFilePath() {
+    local resourcesDirPath=$(getResourcesDirPath)
+    local fileSeparator=$(getFileSeparator)
+    local jadxVersion="1.5.3"
+    local jadxDirPath="${resourcesDirPath}${fileSeparator}jadx-${jadxVersion}"
+
+    local outputPrint
+    local exitCode
+    if [[ ! -d "${jadxDirPath}" ]]; then
+        zipFileName="jadx-${jadxVersion}.zip"
+        decompressedDirPath="${resourcesDirPath}${fileSeparator}jadx-${jadxVersion}"
+        zipUrl="https://github.com/skylot/jadx/releases/download/v${jadxVersion}/${zipFileName}"
+        zipFilePath="${resourcesDirPath}${fileSeparator}${zipFileName}"
+        expectedSha256="8280f3799c0273fe797a2bcd90258c943e451fd195f13d05400de5e6451d15ec"
+        if [[ -f "${zipFilePath}" ]]; then
+            actualSha256=$(getFileSha256 "${zipFilePath}")
+            if [[ "${actualSha256}" != "${expectedSha256}" ]]; then
+                rm -f "${zipFilePath}"
+            fi
+        fi
+        if [[ -f "${zipFilePath}" ]]; then
+            outputPrint="$(unzip -q -o "${zipFilePath}" -d "${decompressedDirPath}" 2>&1)"
+            exitCode=$?
+            if (( exitCode != 0 )); then
+                echo "❌ ${zipFileName} 解压失败，原因如下："
+                echo "${outputPrint}"
+                kill -SIGTERM $$
+                exit 1
+            fi
+        else
+            echo "⏳ 检测到本地还未下载 jadx，开始下载 ${zipFileName} 文件，体积较大请耐心等待..."
+            curl -L --progress-bar -o "${zipFilePath}" "${zipUrl}"
+            exitCode=$?
+            if (( exitCode != 0 )); then
+                echo "❌ ${zipFileName} 下载失败，请检查网络或稍后重试"
+                kill -SIGTERM $$
+                exit 1
+            fi
+            actualSha256=$(getFileSha256 "${zipFilePath}")
+            if [[ "${actualSha256}" != "${expectedSha256}" ]]; then
+                rm -f "${zipFilePath}"
+                echo "❌ ${zipFileName} 文件校验失败，期望值：${expectedSha256}，实际值：${actualSha256}"
+                kill -SIGTERM $$
+                exit 1
+            fi
+            outputPrint="$(unzip -q -o "${zipFilePath}" -d "${decompressedDirPath}" 2>&1)"
+            exitCode=$?
+            if (( exitCode != 0 )); then
+                echo "❌ ${zipFileName} 解压失败，原因如下："
+                echo "${outputPrint}"
+                kill -SIGTERM $$
+                exit 1
+            fi
+        fi
+        rm -f "${zipFilePath}"
+    fi
+
+    local jadxGuiShellFilePath="${jadxDirPath}${fileSeparator}bin${fileSeparator}jadx-gui"
+    if ! isWindows; then
+        if [[ ! -x "${jadxGuiShellFilePath}" ]]; then
+            chmod +x "${jadxGuiShellFilePath}"
+        fi
+        jadxShellFilePath="${jadxDirPath}${fileSeparator}bin${fileSeparator}jadx"
+        if [[ ! -x "${jadxShellFilePath}" ]]; then
+            chmod +x "${jadxShellFilePath}"
+        fi
+    fi
+    echo "${jadxGuiShellFilePath}"
+}
+
+getJetifierStandaloneShellFilePath() {
+    local resourcesDirPath=$(getResourcesDirPath)
+    local fileSeparator=$(getFileSeparator)
+    local jetifierDirPath="${resourcesDirPath}${fileSeparator}jetifier-standalone-20200827"
+    local shellPath="${jetifierDirPath}${fileSeparator}bin${fileSeparator}jetifier-standalone"
+    if isWindows; then
+        echo "${shellPath}.bat"
+        return
+    fi
+    if [[ ! -x "${shellPath}" ]]; then
+        chmod +x "${shellPath}"
+    fi
+    echo "${shellPath}"
+}
+
+getADBKeyBoardApkFilePath() {
+    local resourcesDirPath=$(getResourcesDirPath)
+    echo "${resourcesDirPath}$(getFileSeparator)ADBKeyBoard-5.0.apk"
+}
+
+getApksignerJarFilePath() {
+    local resourcesDirPath=$(getResourcesDirPath)
+    echo "${resourcesDirPath}$(getFileSeparator)apksigner-36.0.0.jar"
+}
+
+getDefaultStoreFilePath() {
+    local resourcesDirPath=$(getResourcesDirPath)
+    echo "${resourcesDirPath}$(getFileSeparator)signatureFile$(getFileSeparator)AppSignature.jks"
+}
+
+getApktoolJarFilePath() {
+    local resourcesDirPath=$(getResourcesDirPath)
+    echo "${resourcesDirPath}$(getFileSeparator)apktool-2.12.1.jar"
+}
+
+getBaksmaliJarFilePath() {
+    local resourcesDirPath=$(getResourcesDirPath)
+    echo "${resourcesDirPath}$(getFileSeparator)baksmali-2.5.2.jar"
+}
+
+getSmaliJarFilePath() {
+    local resourcesDirPath=$(getResourcesDirPath)
+    echo "${resourcesDirPath}$(getFileSeparator)smali-2.5.2.jar"
+}
+
+getDiffuserJarFilePath() {
+    local resourcesDirPath=$(getResourcesDirPath)
+    echo "${resourcesDirPath}$(getFileSeparator)diffuse-0.1.0.jar"
+}
+
+getJdGuiJarFilePath() {
+    local resourcesDirPath=$(getResourcesDirPath)
+    echo "${resourcesDirPath}$(getFileSeparator)jd-gui-1.6.6.jar"
+}

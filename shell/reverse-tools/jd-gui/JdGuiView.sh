@@ -10,7 +10,8 @@ originalDirPath=$PWD
 cd "${scriptDirPath}" || exit 1
 source "../../common/SystemPlatform.sh" && \
 source "../../common/EnvironmentTools.sh" && \
-source "../../common/FileTools.sh" || exit 1
+source "../../common/FileTools.sh" && \
+source "../../business/ResourceManager.sh" || exit 1
 cd "${originalDirPath}" || exit 1
 unset scriptDirPath
 unset originalDirPath
@@ -52,7 +53,7 @@ dexToJar() {
     local outputJarPath="${base}${tsStr}.jar"
     echo "输出的 jar 文件路径：${outputJarPath}" >&2
     local outputPrint
-    outputPrint="$("${resourcesDirPath}$(getFileSeparator)dex2jar-2.4$(getFileSeparator)d2j-dex2jar.sh" -f -o "${outputJarPath}" "${dexPath}" 2>&1)"
+    outputPrint="$("$(getDexToJarShellFilePath)" -f -o "${outputJarPath}" "${dexPath}" 2>&1)"
     local exitCode=$?
     if (( exitCode != 0 )); then
         echo "❌ dex 转 jar 失败，原因如下："
@@ -69,7 +70,7 @@ dexToJar() {
 
 openWithJdGui() {
     local filePath=$1
-    java -jar "${resourcesDirPath}$(getFileSeparator)jd-gui-1.6.6.jar" "$filePath"
+    java -jar "$(getJdGuiJarFilePath)" "$filePath"
 }
 
 openDexWithJdGui() {
@@ -220,13 +221,6 @@ openApkWithJdGui() {
 }
 
 waitUserInputParameter() {
-    resourcesDirPath=$(getResourcesDirPath)
-    if [[ -z "${resourcesDirPath}" ]]; then
-        echo "❌ 未找到 resources 目录，请确保它位于脚本的当前目录或者父目录"
-        exit 1
-    fi
-    echo "资源目录为：${resourcesDirPath}"
-
     echo "请输入要用 jd-gui 打开的文件路径（支持 apk, dex, aar, class, ear, jar, java, jmod, kar, log, war, zip）"
     read -r inputFilePath
     inputFilePath=$(parseComputerFilePath "${inputFilePath}")

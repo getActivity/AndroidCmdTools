@@ -10,7 +10,8 @@ originalDirPath=$PWD
 cd "${scriptDirPath}" || exit 1
 source "../../../common/SystemPlatform.sh" && \
 source "../../../common/EnvironmentTools.sh" && \
-source "../../../common/FileTools.sh" || exit 1
+source "../../../common/FileTools.sh" && \
+source "../../../business/ResourceManager.sh" || exit 1
 cd "${originalDirPath}" || exit 1
 unset scriptDirPath
 unset originalDirPath
@@ -18,13 +19,6 @@ unset originalDirPath
 main() {
     printCurrentSystemType
     checkJavaEnvironment
-
-    resourcesDirPath=$(getResourcesDirPath)
-    if [[ -z "${resourcesDirPath}" ]]; then
-        echo "❌ 未找到 resources 目录，请确保它位于脚本的当前目录或者父目录"
-        exit 1
-    fi
-    echo "资源目录为：${resourcesDirPath}"
 
     echo "请输入要反汇编的 dex/apk 文件路径"
     read -r inputDexFilePath
@@ -52,7 +46,7 @@ main() {
         fi
     fi
 
-    outputPrint="$(java -jar "${resourcesDirPath}$(getFileSeparator)baksmali-2.5.2.jar" d "${inputDexFilePath}" -o "${outputSmaliDirPath}" 2>&1)"
+    outputPrint="$(java -jar "$(getBaksmaliJarFilePath)" d "${inputDexFilePath}" -o "${outputSmaliDirPath}" 2>&1)"
     exitCode=$?
     if (( exitCode != 0 )); then
         echo "❌ dex 转 smali 失败，原因如下："

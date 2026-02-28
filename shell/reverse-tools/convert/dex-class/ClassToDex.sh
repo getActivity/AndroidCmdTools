@@ -10,7 +10,8 @@ originalDirPath=$PWD
 cd "${scriptDirPath}" || exit 1
 source "../../../common/SystemPlatform.sh" && \
 source "../../../common/EnvironmentTools.sh" && \
-source "../../../common/FileTools.sh" || exit 1
+source "../../../common/FileTools.sh" && \
+source "../../../business/ResourceManager.sh" || exit 1
 cd "${originalDirPath}" || exit 1
 unset scriptDirPath
 unset originalDirPath
@@ -20,13 +21,6 @@ main() {
     checkJavaEnvironment
     checkJarEnvironment
     jarCmd=$(getJarCmd)
-
-    resourcesDirPath=$(getResourcesDirPath)
-    if [[ -z "${resourcesDirPath}" ]]; then
-        echo "❌ 未找到 resources 目录，请确保它位于脚本的当前目录或者父目录"
-        exit 1
-    fi
-    echo "资源目录为：${resourcesDirPath}"
 
     echo "请输入 .class 文件所在目录或单个 .class 文件路径"
     read -r inputPath
@@ -79,7 +73,7 @@ main() {
             rmdir "${outputDex}"
         fi
     fi
-    outputPrint="$("${resourcesDirPath}$(getFileSeparator)dex2jar-2.4$(getFileSeparator)d2j-jar2dex.sh" -f -o "${outputDex}" "${tempJar}" 2>&1)"
+    outputPrint="$("$(getJarToDexShellDirPath)" -f -o "${outputDex}" "${tempJar}" 2>&1)"
     exitCode=$?
     rm -f "${tempJar}"
     if (( exitCode != 0 )) || [[ ! -f "${outputDex}" ]]; then
