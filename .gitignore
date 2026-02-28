@@ -12,3 +12,4 @@ jd-gui.cfg
 local.properties
 
 **/jadx-*/
+bundletool-*.jar

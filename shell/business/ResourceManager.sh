@@ -27,6 +27,7 @@ getJarToDexShellFilePath() {
     local resourcesDirPath=$(getResourcesDirPath)
     echo "${resourcesDirPath}$(getFileSeparator)dex2jar-2.4$(getFileSeparator)d2j-jar2dex.sh"
 }
+
 getJadxShellFilePath() {
     local resourcesDirPath=$(getResourcesDirPath)
     local fileSeparator=$(getFileSeparator)
@@ -35,12 +36,13 @@ getJadxShellFilePath() {
 
     local outputPrint
     local exitCode
+    local actualSha256
     if [[ ! -d "${jadxDirPath}" ]]; then
-        zipFileName="jadx-${jadxVersion}.zip"
-        decompressedDirPath="${resourcesDirPath}${fileSeparator}jadx-${jadxVersion}"
-        zipUrl="https://github.com/skylot/jadx/releases/download/v${jadxVersion}/${zipFileName}"
-        zipFilePath="${resourcesDirPath}${fileSeparator}${zipFileName}"
-        expectedSha256="8280f3799c0273fe797a2bcd90258c943e451fd195f13d05400de5e6451d15ec"
+        local zipFileName="jadx-${jadxVersion}.zip"
+        local decompressedDirPath="${resourcesDirPath}${fileSeparator}jadx-${jadxVersion}"
+        local zipUrl="https://github.com/skylot/jadx/releases/download/v${jadxVersion}/${zipFileName}"
+        local zipFilePath="${resourcesDirPath}${fileSeparator}${zipFileName}"
+        local expectedSha256="8280f3799c0273fe797a2bcd90258c943e451fd195f13d05400de5e6451d15ec"
         if [[ -f "${zipFilePath}" ]]; then
             actualSha256=$(getFileSha256 "${zipFilePath}")
             if [[ "${actualSha256}" != "${expectedSha256}" ]]; then
@@ -51,32 +53,32 @@ getJadxShellFilePath() {
             outputPrint="$(unzip -q -o "${zipFilePath}" -d "${decompressedDirPath}" 2>&1)"
             exitCode=$?
             if (( exitCode != 0 )); then
-                echo "❌ ${zipFileName} 解压失败，原因如下："
-                echo "${outputPrint}"
+                echo "❌ ${zipFileName} 解压失败，原因如下：" >&2
+                echo "${outputPrint}" >&2
                 kill -SIGTERM $$
                 exit 1
             fi
         else
-            echo "⏳ 检测到本地还未下载 jadx，开始下载 ${zipFileName} 文件，体积较大请耐心等待..."
+            echo "⏳ 检测到本地还未下载 jadx，开始下载 ${zipFileName} 文件，体积较大请耐心等待..." >&2
             curl -L --progress-bar -o "${zipFilePath}" "${zipUrl}"
             exitCode=$?
             if (( exitCode != 0 )); then
-                echo "❌ ${zipFileName} 下载失败，请检查网络或稍后重试"
+                echo "❌ ${zipFileName} 下载失败，请检查网络或稍后重试" >&2
                 kill -SIGTERM $$
                 exit 1
             fi
             actualSha256=$(getFileSha256 "${zipFilePath}")
             if [[ "${actualSha256}" != "${expectedSha256}" ]]; then
                 rm -f "${zipFilePath}"
-                echo "❌ ${zipFileName} 文件校验失败，期望值：${expectedSha256}，实际值：${actualSha256}"
+                echo "❌ ${zipFileName} 文件校验失败，期望值：${expectedSha256}，实际值：${actualSha256}" >&2
                 kill -SIGTERM $$
                 exit 1
             fi
             outputPrint="$(unzip -q -o "${zipFilePath}" -d "${decompressedDirPath}" 2>&1)"
             exitCode=$?
             if (( exitCode != 0 )); then
-                echo "❌ ${zipFileName} 解压失败，原因如下："
-                echo "${outputPrint}"
+                echo "❌ ${zipFileName} 解压失败，原因如下：" >&2
+                echo "${outputPrint}" >&2
                 kill -SIGTERM $$
                 exit 1
             fi
@@ -89,7 +91,7 @@ getJadxShellFilePath() {
         if [[ ! -x "${jadxGuiShellFilePath}" ]]; then
             chmod +x "${jadxGuiShellFilePath}"
         fi
-        jadxShellFilePath="${jadxDirPath}${fileSeparator}bin${fileSeparator}jadx"
+        local jadxShellFilePath="${jadxDirPath}${fileSeparator}bin${fileSeparator}jadx"
         if [[ ! -x "${jadxShellFilePath}" ]]; then
             chmod +x "${jadxShellFilePath}"
         fi
@@ -150,4 +152,40 @@ getDiffuserJarFilePath() {
 getJdGuiJarFilePath() {
     local resourcesDirPath=$(getResourcesDirPath)
     echo "${resourcesDirPath}$(getFileSeparator)jd-gui-1.6.6.jar"
+}
+
+getBundletoolJarFilePath() {
+    local resourcesDirPath
+    resourcesDirPath=$(getResourcesDirPath)
+    local fileSeparator
+    fileSeparator=$(getFileSeparator)
+    local version="1.18.3"
+    local jarFilePath="${resourcesDirPath}${fileSeparator}bundletool-${version}.jar"
+    local expectedSha256="a099cfa1543f55593bc2ed16a70a7c67fe54b1747bb7301f37fdfd6d91028e29"
+    local actualSha256
+    if [[ -f "${jarFilePath}" ]]; then
+        actualSha256=$(getFileSha256 "${jarFilePath}")
+        if [[ "${actualSha256}" == "${expectedSha256}" ]]; then
+            echo "${jarFilePath}"
+            return
+        fi
+        rm -f "${jarFilePath}"
+    fi
+    local url="https://github.com/google/bundletool/releases/download/${version}/bundletool-all-${version}.jar"
+    echo "⏳ 检测到本地还未下载 bundletool，开始下载 bundletool-all-${version}.jar，体积较大请耐心等待..." >&2
+    curl -L --progress-bar -o "${jarFilePath}" "${url}"
+    local exitCode=$?
+    if (( exitCode != 0 )); then
+        echo "❌ bundletool-all-${version}.jar 下载失败，请检查网络或稍后重试" >&2
+        kill -SIGTERM $$
+        exit 1
+    fi
+    actualSha256=$(getFileSha256 "${jarFilePath}")
+    if [[ "${actualSha256}" != "${expectedSha256}" ]]; then
+        rm -f "${jarFilePath}"
+        echo "❌ bundletool-all-${version}.jar 文件校验失败，期望值：${expectedSha256}，实际值：${actualSha256}" >&2
+        kill -SIGTERM $$
+        exit 1
+    fi
+    echo "${jarFilePath}"
 }

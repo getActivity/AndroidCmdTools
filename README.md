@@ -282,6 +282,8 @@
 
     * apk aar jar aab 包体比较
 
+    * 将 aab 包转成 apks 格式
+
 * 《秘钥工具》
 
     * 查看已有 SSH 公钥
