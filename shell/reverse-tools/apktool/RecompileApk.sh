@@ -57,16 +57,12 @@ waitUserInputParameter() {
         fi
     fi
 
-    local apktoolDefaultJarFilePath
-    apktoolDefaultJarFilePath=$(getApktoolJarFilePath)
-    local apktoolDefaultJarFileName
-    apktoolDefaultJarFileName=$(basename "${apktoolDefaultJarFilePath}")
-    echo "请输入 apktool jar 包的路径（可为空，默认使用 ${apktoolDefaultJarFileName}）"
+    echo "请输入 apktool jar 包的路径（可为空）"
     read -r apktoolJarFilePath
     apktoolJarFilePath=$(parseComputerFilePath "${apktoolJarFilePath}")
 
     if [[ -z "${apktoolJarFilePath}" ]]; then
-        apktoolJarFilePath="${apktoolDefaultJarFilePath}"
+        apktoolJarFilePath=$(getApktoolJarFilePath)
     fi
 
     if [[ ! -f "${apktoolJarFilePath}" ]]; then

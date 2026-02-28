@@ -130,8 +130,37 @@ getDefaultStoreFilePath() {
 }
 
 getApktoolJarFilePath() {
-    local resourcesDirPath=$(getResourcesDirPath)
-    echo "${resourcesDirPath}$(getFileSeparator)apktool-2.12.1.jar"
+    local resourcesDirPath
+    resourcesDirPath=$(getResourcesDirPath)
+    local apktoolVersion="3.0.1"
+    local jarFilePath="${resourcesDirPath}$(getFileSeparator)apktool-${apktoolVersion}.jar"
+    local expectedSha256="b947b945b4bc455609ba768d071b64d9e63834079898dbaae15b67bf03bcd362"
+    local actualSha256
+    if [[ -f "${jarFilePath}" ]]; then
+        actualSha256=$(getFileSha256 "${jarFilePath}")
+        if [[ "${actualSha256}" == "${expectedSha256}" ]]; then
+            echo "${jarFilePath}"
+            return
+        fi
+        rm -f "${jarFilePath}"
+    fi
+    local url="https://github.com/iBotPeaches/Apktool/releases/download/v${apktoolVersion}/apktool_${apktoolVersion}.jar"
+    echo "⏳ 检测到本地还未下载 apktool，开始下载 apktool-${apktoolVersion}.jar，体积较大请耐心等待..." >&2
+    curl -L --progress-bar -o "${jarFilePath}" "${url}"
+    local exitCode=$?
+    if (( exitCode != 0 )); then
+        echo "❌ apktool-${apktoolVersion}.jar 下载失败，请检查网络或稍后重试" >&2
+        kill -SIGTERM $$
+        exit 1
+    fi
+    actualSha256=$(getFileSha256 "${jarFilePath}")
+    if [[ "${actualSha256}" != "${expectedSha256}" ]]; then
+        rm -f "${jarFilePath}"
+        echo "❌ apktool-${apktoolVersion}.jar 文件校验失败，期望值：${expectedSha256}，实际值：${actualSha256}" >&2
+        kill -SIGTERM $$
+        exit 1
+    fi
+    echo "${jarFilePath}"
 }
 
 getBaksmaliJarFilePath() {
@@ -157,10 +186,8 @@ getJdGuiJarFilePath() {
 getBundletoolJarFilePath() {
     local resourcesDirPath
     resourcesDirPath=$(getResourcesDirPath)
-    local fileSeparator
-    fileSeparator=$(getFileSeparator)
-    local version="1.18.3"
-    local jarFilePath="${resourcesDirPath}${fileSeparator}bundletool-${version}.jar"
+    local bundletoolVersion="1.18.3"
+    local jarFilePath="${resourcesDirPath}$(getFileSeparator)bundletool-${bundletoolVersion}.jar"
     local expectedSha256="a099cfa1543f55593bc2ed16a70a7c67fe54b1747bb7301f37fdfd6d91028e29"
     local actualSha256
     if [[ -f "${jarFilePath}" ]]; then
@@ -171,19 +198,19 @@ getBundletoolJarFilePath() {
         fi
         rm -f "${jarFilePath}"
     fi
-    local url="https://github.com/google/bundletool/releases/download/${version}/bundletool-all-${version}.jar"
-    echo "⏳ 检测到本地还未下载 bundletool，开始下载 bundletool-all-${version}.jar，体积较大请耐心等待..." >&2
+    local url="https://github.com/google/bundletool/releases/download/${bundletoolVersion}/bundletool-all-${bundletoolVersion}.jar"
+    echo "⏳ 检测到本地还未下载 bundletool，开始下载 bundletool-all-${bundletoolVersion}.jar，体积较大请耐心等待..." >&2
     curl -L --progress-bar -o "${jarFilePath}" "${url}"
     local exitCode=$?
     if (( exitCode != 0 )); then
-        echo "❌ bundletool-all-${version}.jar 下载失败，请检查网络或稍后重试" >&2
+        echo "❌ bundletool-all-${bundletoolVersion}.jar 下载失败，请检查网络或稍后重试" >&2
         kill -SIGTERM $$
         exit 1
     fi
     actualSha256=$(getFileSha256 "${jarFilePath}")
     if [[ "${actualSha256}" != "${expectedSha256}" ]]; then
         rm -f "${jarFilePath}"
-        echo "❌ bundletool-all-${version}.jar 文件校验失败，期望值：${expectedSha256}，实际值：${actualSha256}" >&2
+        echo "❌ bundletool-all-${bundletoolVersion}.jar 文件校验失败，期望值：${expectedSha256}，实际值：${actualSha256}" >&2
         kill -SIGTERM $$
         exit 1
     fi

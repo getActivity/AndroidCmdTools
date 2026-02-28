@@ -12,4 +12,5 @@ jd-gui.cfg
 local.properties
 
 **/jadx-*/
+apktool-*.jar
 bundletool-*.jar
