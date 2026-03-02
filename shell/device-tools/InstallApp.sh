@@ -81,9 +81,11 @@ installApksWithBundletool() {
     baseName=$(basename "${apksFilePath}")
     echo "⏳ [${deviceId}] 设备正在安装 [${baseName}]"
     local outputPrint
-    local javaMajorVersionCode=$(getJavaMajorVersionCode)
+    local javaMajorVersionCode
+    javaMajorVersionCode=$(getJavaMajorVersionCode)
     if (( javaMajorVersionCode <= 11 )); then
-        local tempDirPath=$(unzipFileToTempDir "${apksFilePath}")
+        local tempDirPath
+        tempDirPath=$(unzipFileToTempDir "${apksFilePath}")
         local -a apkList=()
         while IFS= read -r -d '' apk; do apkList+=("${apk}"); done < <(findApkPathForDir "${tempDirPath}")
         outputPrint=$(adb -s "${deviceId}" install-multiple -r "${apkList[@]}" < /dev/null 2>&1)
@@ -112,7 +114,8 @@ installMultipleApkFromDir() {
     local baseName
     baseName=$(basename "${targetApkFilePath}")
     echo "⏳ [${deviceId}] 设备正在安装 [${baseName}]"
-    local outputPrint=$(adb -s "${deviceId}" install-multiple -r "${apkList[@]}" < /dev/null 2>&1)
+    local outputPrint
+    outputPrint=$(adb -s "${deviceId}" install-multiple -r "${apkList[@]}" < /dev/null 2>&1)
     local exitCode=$?
     if (( exitCode == 0 )); then
         echo "✅ [${deviceId}] 设备安装 [${baseName}] 成功"
@@ -201,7 +204,8 @@ installMultipleApk() {
         elif [[ "${filePath}" =~ \.apks$ ]]; then
             installApksWithBundletool "${deviceId}" "${filePath}"
         elif [[ "${filePath}" =~ \.(xapk|apkm)$ ]]; then
-            local tempDirPath=$(unzipFileToTempDir "${filePath}")
+            local tempDirPath
+            tempDirPath=$(unzipFileToTempDir "${filePath}")
             if [[ "${filePath}" =~ \.xapk$ ]]; then
                 maybePushObb "${deviceId}" "${tempDirPath}"
             fi

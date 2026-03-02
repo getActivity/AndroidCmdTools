@@ -71,7 +71,8 @@ waitUserInputParameter() {
 main() {
     checkJavaElevenEnvironment
     waitUserInputParameter "$1"
-    local apksFilePath="$(dirname "${aabFilePath}")/$(basename "${aabFilePath}" .aab).apks"
+    local apksFilePath
+    apksFilePath="$(dirname "${aabFilePath}")/$(basename "${aabFilePath}" .aab).apks"
     apksFileSuffix="-$(date "+%Y%m%d%H%M%S")"
     if [[ -f "${apksFilePath}" ]]; then
         apksFilePath="${apksFilePath%.*}${apksFileSuffix}.${apksFilePath##*.}"

@@ -9,28 +9,34 @@ source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/../common/SystemPlatform.s
 source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/../common/FileTools.sh" || source "../common/FileTools.sh"
 
 getDexToJarShellDirPath() {
-    local resourcesDirPath=$(getResourcesDirPath)
+    local resourcesDirPath
+    resourcesDirPath=$(getResourcesDirPath)
     echo "${resourcesDirPath}$(getFileSeparator)dex2jar-2.4$(getFileSeparator)d2j-dex2jar.sh"
 }
 
 getDexToJarShellFilePath() {
-    local resourcesDirPath=$(getResourcesDirPath)
+    local resourcesDirPath
+    resourcesDirPath=$(getResourcesDirPath)
     echo "${resourcesDirPath}$(getFileSeparator)dex2jar-2.4$(getFileSeparator)d2j-dex2jar.sh"
 }
 
 getJarToDexShellDirPath() {
-    local resourcesDirPath=$(getResourcesDirPath)
+    local resourcesDirPath
+    resourcesDirPath=$(getResourcesDirPath)
     echo "${resourcesDirPath}$(getFileSeparator)dex2jar-2.4$(getFileSeparator)d2j-jar2dex.sh"
 }
 
 getJarToDexShellFilePath() {
-    local resourcesDirPath=$(getResourcesDirPath)
+    local resourcesDirPath
+    resourcesDirPath=$(getResourcesDirPath)
     echo "${resourcesDirPath}$(getFileSeparator)dex2jar-2.4$(getFileSeparator)d2j-jar2dex.sh"
 }
 
 getJadxShellFilePath() {
-    local resourcesDirPath=$(getResourcesDirPath)
-    local fileSeparator=$(getFileSeparator)
+    local resourcesDirPath
+    resourcesDirPath=$(getResourcesDirPath)
+    local fileSeparator
+    fileSeparator=$(getFileSeparator)
     local jadxVersion="1.5.3"
     local jadxDirPath="${resourcesDirPath}${fileSeparator}jadx-${jadxVersion}"
 
@@ -100,8 +106,10 @@ getJadxShellFilePath() {
 }
 
 getJetifierStandaloneShellFilePath() {
-    local resourcesDirPath=$(getResourcesDirPath)
-    local fileSeparator=$(getFileSeparator)
+    local resourcesDirPath
+    resourcesDirPath=$(getResourcesDirPath)
+    local fileSeparator
+    fileSeparator=$(getFileSeparator)
     local jetifierDirPath="${resourcesDirPath}${fileSeparator}jetifier-standalone-20200827"
     local shellPath="${jetifierDirPath}${fileSeparator}bin${fileSeparator}jetifier-standalone"
     if isWindows; then
@@ -115,17 +123,20 @@ getJetifierStandaloneShellFilePath() {
 }
 
 getADBKeyBoardApkFilePath() {
-    local resourcesDirPath=$(getResourcesDirPath)
+    local resourcesDirPath
+    resourcesDirPath=$(getResourcesDirPath)
     echo "${resourcesDirPath}$(getFileSeparator)ADBKeyBoard-5.0.apk"
 }
 
 getApksignerJarFilePath() {
-    local resourcesDirPath=$(getResourcesDirPath)
+    local resourcesDirPath
+    resourcesDirPath=$(getResourcesDirPath)
     echo "${resourcesDirPath}$(getFileSeparator)apksigner-36.0.0.jar"
 }
 
 getDefaultStoreFilePath() {
-    local resourcesDirPath=$(getResourcesDirPath)
+    local resourcesDirPath
+    resourcesDirPath=$(getResourcesDirPath)
     echo "${resourcesDirPath}$(getFileSeparator)signatureFile$(getFileSeparator)AppSignature.jks"
 }
 
@@ -133,7 +144,8 @@ getApktoolJarFilePath() {
     local resourcesDirPath
     resourcesDirPath=$(getResourcesDirPath)
     local apktoolVersion="3.0.1"
-    local jarFilePath="${resourcesDirPath}$(getFileSeparator)apktool-${apktoolVersion}.jar"
+    local jarFilePath
+    jarFilePath="${resourcesDirPath}$(getFileSeparator)apktool-${apktoolVersion}.jar"
     local expectedSha256="b947b945b4bc455609ba768d071b64d9e63834079898dbaae15b67bf03bcd362"
     local actualSha256
     if [[ -f "${jarFilePath}" ]]; then
@@ -164,22 +176,26 @@ getApktoolJarFilePath() {
 }
 
 getBaksmaliJarFilePath() {
-    local resourcesDirPath=$(getResourcesDirPath)
+    local resourcesDirPath
+    resourcesDirPath=$(getResourcesDirPath)
     echo "${resourcesDirPath}$(getFileSeparator)baksmali-2.5.2.jar"
 }
 
 getSmaliJarFilePath() {
-    local resourcesDirPath=$(getResourcesDirPath)
+    local resourcesDirPath
+    resourcesDirPath=$(getResourcesDirPath)
     echo "${resourcesDirPath}$(getFileSeparator)smali-2.5.2.jar"
 }
 
 getDiffuserJarFilePath() {
-    local resourcesDirPath=$(getResourcesDirPath)
+    local resourcesDirPath
+    resourcesDirPath=$(getResourcesDirPath)
     echo "${resourcesDirPath}$(getFileSeparator)diffuse-0.1.0.jar"
 }
 
 getJdGuiJarFilePath() {
-    local resourcesDirPath=$(getResourcesDirPath)
+    local resourcesDirPath
+    resourcesDirPath=$(getResourcesDirPath)
     echo "${resourcesDirPath}$(getFileSeparator)jd-gui-1.6.6.jar"
 }
 
@@ -187,7 +203,8 @@ getBundletoolJarFilePath() {
     local resourcesDirPath
     resourcesDirPath=$(getResourcesDirPath)
     local bundletoolVersion="1.18.3"
-    local jarFilePath="${resourcesDirPath}$(getFileSeparator)bundletool-${bundletoolVersion}.jar"
+    local jarFilePath
+    jarFilePath="${resourcesDirPath}$(getFileSeparator)bundletool-${bundletoolVersion}.jar"
     local expectedSha256="a099cfa1543f55593bc2ed16a70a7c67fe54b1747bb7301f37fdfd6d91028e29"
     local actualSha256
     if [[ -f "${jarFilePath}" ]]; then
