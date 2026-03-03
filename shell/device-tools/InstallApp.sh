@@ -44,7 +44,7 @@ waitUserInputParameter() {
             exit 1
         fi
     elif [[ -f "${sourcePath}" ]]; then
-        if [[ ! "${sourcePath}" =~ \.(apk|apks|xapk|apkm)$ ]]; then
+        if [[ ! "${sourcePath}" =~ \.([Aa][Pp][Kk]|[Aa][Pp][Kk][Ss]|[Xx][Aa][Pp][Kk]|[Aa][Pp][Kk][Mm])$ ]]; then
             echo "❌ 文件错误，只接受后缀为 apk/apks/xapk/apkm 的文件"
             exit 1
         fi
@@ -191,7 +191,7 @@ findApkPathForDir() {
             continue
         fi
         printf '%s\0' "$p"
-    done < <(find "${dir}" -type f -name "*.apk" -print0)
+    done < <(find "${dir}" -type f -iname "*.apk" -print0)
 }
 
 installMultipleApk() {
@@ -199,14 +199,14 @@ installMultipleApk() {
     local successCount=0
     local failCount=0
     for filePath in "${packageFiles[@]}"; do
-        if [[ "${filePath}" =~ \.apk$ ]]; then
+        if [[ "${filePath}" =~ \.([Aa][Pp][Kk])$ ]]; then
             installSingleApk "${deviceId}" "${filePath}"
-        elif [[ "${filePath}" =~ \.apks$ ]]; then
+        elif [[ "${filePath}" =~ \.([Aa][Pp][Kk][Ss])$ ]]; then
             installApksWithBundletool "${deviceId}" "${filePath}"
-        elif [[ "${filePath}" =~ \.(xapk|apkm)$ ]]; then
+        elif [[ "${filePath}" =~ \.([Xx][Aa][Pp][Kk]|[Aa][Pp][Kk][Mm])$ ]]; then
             local tempDirPath
             tempDirPath=$(unzipFileToTempDir "${filePath}")
-            if [[ "${filePath}" =~ \.xapk$ ]]; then
+            if [[ "${filePath}" =~ \.([Xx][Aa][Pp][Kk])$ ]]; then
                 maybePushObb "${deviceId}" "${tempDirPath}"
             fi
             installMultipleApkFromDir "${deviceId}" "${tempDirPath}" "${filePath}"

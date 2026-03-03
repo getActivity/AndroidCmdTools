@@ -33,13 +33,13 @@ waitUserInputParameter() {
     if [[ -d "${sourcePath}" ]]; then
         while IFS= read -r -d '' file; do
             apkFiles+=("${file}")
-        done < <(find "${sourcePath}" -maxdepth 1 -type f -name "*.apk" -print0)
+        done < <(find "${sourcePath}" -maxdepth 1 -type f -iname "*.apk" -print0)
         if (( ${#apkFiles[@]} == 0 )); then
             echo "❌ 该目录下没有以 .apk 结尾的文件，签名中止"
             exit 1
         fi
     elif [[ -f "${sourcePath}" ]]; then
-        if [[ ! "${sourcePath}" =~ \.(apk)$ ]]; then
+        if [[ ! "${sourcePath}" =~ \.([Aa][Pp][Kk])$ ]]; then
             echo "❌ 文件错误，只接受文件名后缀为 apk 的文件"
             exit 1
         fi
@@ -97,7 +97,7 @@ waitUserInputParameter() {
         echo "❌ 文件不存在，请检查 ${apkSignerJarFilePath} 文件路径是否正确"
         exit 1
     fi
-    if [[ ! "${apkSignerJarFilePath}" =~ \.(jar)$ ]]; then
+    if [[ ! "${apkSignerJarFilePath}" =~ \.([Jj][Aa][Rr])$ ]]; then
         echo "❌ 文件错误，apksigner 文件名后缀只能是 jar 结尾"
         exit 1
     fi

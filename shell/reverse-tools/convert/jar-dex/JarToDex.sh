@@ -29,7 +29,7 @@ main() {
         exit 1
     fi
 
-    if [[ ! "${inputFilePath}" =~ \.(jar)$ ]]; then
+    if [[ ! "${inputFilePath}" =~ \.([Jj][Aa][Rr])$ ]]; then
         echo "❌ 文件错误，只支持文件名后缀为 jar 的文件"
         exit 1
     fi

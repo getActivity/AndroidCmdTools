@@ -27,7 +27,7 @@ main() {
         echo "文件不存在，请检查 ${oldLibraryFilePath} 文件路径是否正确"
         exit 1
     fi
-    if [[ ! "${oldLibraryFilePath}" =~ \.(apk|aar|jar|aab)$ ]]; then
+    if [[ ! "${oldLibraryFilePath}" =~ \.([Aa][Pp][Kk]|[Aa][Aa][Rr]|[Jj][Aa][Rr]|[Aa][Aa][Bb])$ ]]; then
         echo "文件错误，只支持文件名后缀为 apk, aar, jar, aab 包的文件"
         exit 1
     fi
@@ -39,7 +39,7 @@ main() {
         echo "文件不存在，请检查 ${newLibraryFilePath} 文件路径是否正确"
         exit 1
     fi
-    if [[ ! "${newLibraryFilePath}" =~ \.(apk|aar|jar|aab)$ ]]; then
+    if [[ ! "${newLibraryFilePath}" =~ \.([Aa][Pp][Kk]|[Aa][Aa][Rr]|[Jj][Aa][Rr]|[Aa][Aa][Bb])$ ]]; then
         echo "文件错误，只支持文件名后缀为 apk, aar, jar, aab 包的文件"
         exit 1
     fi

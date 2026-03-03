@@ -87,7 +87,7 @@ flashTempRecoveryForDevice() {
         return 1
     fi
 
-    if [[ ! "${recoveryFilePath}" =~ \.(img)$ ]]; then
+    if [[ ! "${recoveryFilePath}" =~ \.([Ii][Mm][Gg])$ ]]; then
         echo "❌ 文件错误，只接受文件名后缀为 img 的文件"
         exit 1
     fi

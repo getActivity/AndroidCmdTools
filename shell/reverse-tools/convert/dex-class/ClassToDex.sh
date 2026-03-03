@@ -37,7 +37,7 @@ main() {
         echo "中间 jar 路径：${tempJar}"
         outputPrint=$("${jarCmd}" cf "${tempJar}" -C "${classesDirPath}" . 2>&1)
     elif [[ -f "${inputPath}" ]]; then
-        if [[ ! "${inputPath}" =~ \.(class)$ ]]; then
+        if [[ ! "${inputPath}" =~ \.([Cc][Ll][Aa][Ss][Ss])$ ]]; then
             echo "❌ 文件错误，只支持文件名后缀为 class 的文件"
             exit 1
         fi

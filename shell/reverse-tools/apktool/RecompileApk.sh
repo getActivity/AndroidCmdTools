@@ -70,7 +70,7 @@ waitUserInputParameter() {
         exit 1
     fi
 
-    if [[ ! "${apktoolJarFilePath}" =~ \.(jar)$ ]]; then
+    if [[ ! "${apktoolJarFilePath}" =~ \.([Jj][Aa][Rr])$ ]]; then
         echo "❌ 文件错误，apktool 文件名后缀只能是 jar 结尾"
         exit 1
     fi

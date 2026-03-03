@@ -29,7 +29,7 @@ main() {
         exit 1
     fi
 
-    if [[ ! "${inputFilePath}" =~ \.(apk|dex|jar|class|smali|zip|aar|arsc|xapk|apkm|jadx|aab)$ ]]; then
+    if [[ ! "${inputFilePath}" =~ \.([Aa][Pp][Kk]|[Dd][Ee][Xx]|[Jj][Aa][Rr]|[Cc][Ll][Aa][Ss][Ss]|[Ss][Mm][Aa][Ll][Ii]|[Zz][Ii][Pp]|[Aa][Aa][Rr]|[Aa][Rr][Ss][Cc]|[Xx][Aa][Pp][Kk]|[Aa][Pp][Kk][Mm]|[Jj][Aa][Dd][Xx]|[Aa][Aa][Bb])$ ]]; then
         echo "❌ 文件错误，仅支持后缀为 apk, dex, jar, class, smali, zip, aar, arsc, xapk, apkm, jadx, aab 的文件"
         exit 1
     fi

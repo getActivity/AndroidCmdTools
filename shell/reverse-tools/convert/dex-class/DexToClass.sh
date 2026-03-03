@@ -29,7 +29,7 @@ main() {
         exit 1
     fi
 
-    if [[ ! "${inputFilePath}" =~ \.(dex|apk)$ ]]; then
+    if [[ ! "${inputFilePath}" =~ \.([Dd][Ee][Xx]|[Aa][Pp][Kk])$ ]]; then
         echo "❌ 文件错误，只支持文件名后缀为 dex 或 apk 的文件"
         exit 1
     fi

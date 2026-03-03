@@ -36,7 +36,7 @@ waitUserInputParameter() {
         exit 1
     fi
 
-    if [[ ! "${aabFilePath}" =~ \.aab$ ]]; then
+    if [[ ! "${aabFilePath}" =~ \.([Aa][Aa][Bb])$ ]]; then
         echo "❌ 输入无效，只接受以 .aab 结尾的文件"
         exit 1
     fi
@@ -72,7 +72,7 @@ main() {
     checkJavaElevenEnvironment
     waitUserInputParameter "$1"
     local apksFilePath
-    apksFilePath="$(dirname "${aabFilePath}")/$(basename "${aabFilePath}" .aab).apks"
+    apksFilePath="$(dirname "${aabFilePath}")/$(basename "${aabFilePath%.*}").apks"
     apksFileSuffix="-$(date "+%Y%m%d%H%M%S")"
     if [[ -f "${apksFilePath}" ]]; then
         apksFilePath="${apksFilePath%.*}${apksFileSuffix}.${apksFilePath##*.}"

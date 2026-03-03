@@ -29,7 +29,7 @@ main() {
         exit 1
     fi
 
-    if [[ ! "${sourceApkFilePath}" =~ \.(apk)$ ]]; then
+    if [[ ! "${sourceApkFilePath}" =~ \.([Aa][Pp][Kk])$ ]]; then
         echo "❌ 文件错误，只能验证文件名后缀为 apk 的文件"
         exit 1
     fi
@@ -47,7 +47,7 @@ main() {
         exit 1
     fi
 
-    if [[ ! "${apkSignerJarFilePath}" =~ \.(jar)$ ]]; then
+    if [[ ! "${apkSignerJarFilePath}" =~ \.([Jj][Aa][Rr])$ ]]; then
         echo "❌ 文件错误，apksigner 文件名后缀只能是 jar 结尾"
         exit 1
     fi

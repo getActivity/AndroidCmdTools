@@ -29,7 +29,7 @@ main() {
         exit 1
     fi
 
-    if [[ ! "${supportFilePath}" =~ \.(aar|jar|zip)$ ]]; then
+    if [[ ! "${supportFilePath}" =~ \.([Aa][Aa][Rr]|[Jj][Aa][Rr]|[Zz][Ii][Pp])$ ]]; then
         echo "❌ 文件错误，只支持文件名后缀为 aar / jar / zip 包的文件"
         exit 1
     fi

@@ -237,14 +237,14 @@ main() {
     checkJarEnvironment
     waitUserInputParameter
 
-    if [[ ! "${inputFilePath}" =~ \.(apk|dex|aar|class|ear|jar|java|jmod|kar|log|war|zip)$ ]]; then
+    if [[ ! "${inputFilePath}" =~ \.([Aa][Pp][Kk]|[Dd][Ee][Xx]|[Aa][Aa][Rr]|[Cc][Ll][Aa][Ss][Ss]|[Ee][Aa][Rr]|[Jj][Aa][Rr]|[Jj][Aa][Vv][Aa]|[Jj][Mm][Oo][Dd]|[Kk][Aa][Rr]|[Ll][Oo][Gg]|[Ww][Aa][Rr]|[Zz][Ii][Pp])$ ]]; then
         echo "❌ 文件错误，仅支持后缀为 apk, dex, aar, class, ear, jar, java, jmod, kar, log, war, zip 的文件"
         exit 1
     fi
 
-    if [[ "${inputFilePath}" =~ \.(apk)$ ]]; then
+    if [[ "${inputFilePath}" =~ \.([Aa][Pp][Kk])$ ]]; then
         openApkWithJdGui "${inputFilePath}"
-    elif [[ "${inputFilePath}" =~ \.(dex)$ ]]; then
+    elif [[ "${inputFilePath}" =~ \.([Dd][Ee][Xx])$ ]]; then
         openDexWithJdGui "${inputFilePath}"
     else
         openWithJdGui "${inputFilePath}"

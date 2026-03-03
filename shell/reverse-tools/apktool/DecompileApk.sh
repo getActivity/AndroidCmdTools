@@ -26,7 +26,7 @@ waitUserInputParameter() {
         exit 1
     fi
 
-    if [[ ! "${sourceApkFilePath}" =~ \.(apk)$ ]]; then
+    if [[ ! "${sourceApkFilePath}" =~ \.([Aa][Pp][Kk])$ ]]; then
         echo "❌ 文件错误，只能反编译文件名后缀为 apk 的文件"
         exit 1
     fi
