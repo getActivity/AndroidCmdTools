@@ -83,18 +83,29 @@ installApksWithBundletool() {
     local outputPrint
     local javaMajorVersionCode
     javaMajorVersionCode=$(getJavaMajorVersionCode)
-    if (( javaMajorVersionCode <= 11 )); then
+
+    local exitCode
+
+    if (( javaMajorVersionCode >= 11 )); then
+        local bundletoolJar
+        bundletoolJar="$(getBundletoolJarFilePath)"
+        outputPrint=$(java -jar "${bundletoolJar}" install-apks --apks="${apksFilePath}" --device-id="${deviceId}" < /dev/null 2>&1)
+        exitCode=$?
+    else
+        exitCode=1
+    fi
+
+    if (( exitCode != 0 )); then
+        # bundletool 安装失败时回退到解压 + install-multiple
         local tempDirPath
         tempDirPath=$(unzipFileToTempDir "${apksFilePath}")
         local -a apkList=()
         while IFS= read -r -d '' apk; do apkList+=("${apk}"); done < <(findApkPathForDir "${tempDirPath}")
         outputPrint=$(adb -s "${deviceId}" install-multiple -r "${apkList[@]}" < /dev/null 2>&1)
-    else
-        local bundletoolJar
-        bundletoolJar="$(getBundletoolJarFilePath)"
-        outputPrint=$(java -jar "${bundletoolJar}" install-apks --apks="${apksFilePath}" --device-id="${deviceId}" < /dev/null 2>&1)
+        exitCode=$?
     fi
-    local exitCode=$?
+
+    exitCode=$?
     if (( exitCode == 0 )); then
         echo "✅ [${deviceId}] 设备安装 [${baseName}] 成功"
         return 0
@@ -140,12 +151,28 @@ unzipFileToTempDir() {
 maybePushObb() {
     local deviceId=$1
     local unzipApkDirPath=$2
-    local obbPath="${unzipApkDirPath}/Android/obb"
-    if [[ -d "${obbPath}" ]]; then
-        echo "⏳ [${deviceId}] 检测到 OBB，正在推送至 /sdcard/Android/obb"
-        adb -s "${deviceId}" shell "mkdir -p /sdcard/Android/obb" < /dev/null > /dev/null 2>&1
-        adb -s "${deviceId}" push "${obbPath}" "/sdcard/Android/obb" < /dev/null
+    local obbDirPath="${unzipApkDirPath}/Android/obb"
+    if [[ -d "${obbDirPath}" ]]; then
+        echo "⏳ [${deviceId}] 检测到 OBB 目录，正在推送至手机"
+        traversePushFile "${obbDirPath}" "${obbDirPath}"
     fi
+}
+
+traversePushFile() {
+    local rootDirPath="$1"
+    local currentDirPath="$2"
+    for childFilePath in "${currentDirPath}"/*; do
+        if [[ -f "${childFilePath}" ]]; then
+            sourceObbFilePath="${childFilePath}"
+            targetObbFilePath="/sdcard/Android/obb/${childFilePath#$rootDirPath/}"
+            targetObbParentDirPath=$(dirname "${targetObbFilePath}")
+            MSYS_NO_PATHCONV=1 adb shell "[[ -d '${targetObbParentDirPath}' ]] || mkdir -p '${targetObbParentDirPath}'"
+            MSYS_NO_PATHCONV=1 adb -s "${deviceId}" push "${sourceObbFilePath}" "${targetObbFilePath}" < /dev/null
+            MSYS_NO_PATHCONV=1 adb -s "${deviceId}" shell "chmod 644 ${targetObbFilePath}" < /dev/null
+        elif [[ -d "${childFilePath}" ]]; then
+            traversePushFile "${rootDirPath}" "${childFilePath}"
+        fi
+    done
 }
 
 getBashApkPath() {
