@@ -231,9 +231,6 @@ signatureSingleApk() {
         return 1
     fi
     echo "✅ 签名成功 [${baseName}]，存放路径：${targetApkFilePath}"
-    if [[ -f "${targetApkFilePath}.idsig" ]]; then
-        rm -f "${targetApkFilePath}.idsig"
-    fi
     return 0
 }
 
